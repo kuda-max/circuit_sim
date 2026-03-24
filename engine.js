@@ -744,3 +744,18 @@ class CircuitEngine extends CircuitCore {
 }
 
 const circuit = new CircuitEngine();
+
+function getComponentName(type) {
+    switch (type) {
+        case 'R': return 'Resistor';
+        case 'C': return 'Capacitor';
+        case 'L': return 'Inductor';
+        case 'V': return 'Voltage Source';
+        case 'B': return 'Bulb';
+        default:  return 'Component';
+    }
+}
+
+function generateId(prefix) {
+    return `${prefix}-${Math.random().toString(36).substr(2, 9)}`;
+}
