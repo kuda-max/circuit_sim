@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circuit Engine</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <!-- Top Area -->
+        <div class="main-area">
+            <!-- Left Panel: Component Library -->
+            <aside class="left-panel">
+                <h2 class="panel-title">Components</h2>
+                <div class="component-list">
+                    <div class="component-item" draggable="true" data-type="B">
+                        <div class="component-tile">B</div>
+                        <span class="component-label">Bulb</span>
+                    </div>
+                    <div class="component-item" draggable="true" data-type="V">
+                        <div class="component-tile">V</div>
+                        <span class="component-label">Voltage Source</span>
+                    </div>
+                    <div class="component-item" draggable="true" data-type="G">
+                        <div class="component-tile">G</div>
+                        <span class="component-label">Ground</span>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Center Panel: Canvas -->
+            <main class="center-panel" id="canvas-container">
+                <svg id="circuit-svg" width="100%" height="100%">
+                    <defs>
+                        <pattern id="grid-pattern" width="40" height="40" patternUnits="userSpaceOnUse">
+                            <circle cx="1" cy="1" r="1" fill="#334155" opacity="0.5"/>
+                        </pattern>
+                        <marker id="current-arrow" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#10b981" />
+                        </marker>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#grid-pattern)" />
+                    <g id="wires-layer"></g>
+                    <g id="currents-layer"></g>
+                    <g id="components-layer"></g>
+                    <g id="temp-wire-layer" style="display: none;">
+                        <line id="temp-wire" stroke="#64748b" stroke-width="2" stroke-dasharray="5,5" />
+                    </g>
+                </svg>
+                
+                <div class="canvas-overlay">
+                    <div class="grid-info" id="grid-pos">Grid: 0, 0</div>
+                </div>
+            </main>
+
+            <!-- Right Panel: Inspector -->
+            <aside class="right-panel" id="inspector">
+                <h2 class="panel-title">Inspector</h2>
+                <div id="inspector-content">
+                    <div class="empty-state">
+                        <p class="empty-text">No component selected</p>
+                        <div class="system-stats">
+                            <div class="stat-row">
+                                <span>Status:</span>
+                                <span id="sim-status" class="status-badge stopped">Stopped</span>
+                            </div>
+                            <div class="stat-row">
+                                <span>Components:</span>
+                                <span id="stat-components">0</span>
+                            </div>
+                            <div class="stat-row">
+                                <span>Nodes:</span>
+                                <span id="stat-nodes">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Bottom Panel: Controls & Logs -->
+        <footer class="bottom-panel">
+            <div class="control-section">
+                <button class="btn btn-primary" id="btn-run">▶ Run</button>
+                <button class="btn btn-secondary" id="btn-stop" disabled>⏹ Stop</button>
+                <button class="btn btn-tertiary" id="btn-step">⏭ Step</button>
+            </div>
+            
+            <div class="status-section">
+                <div class="status-display" id="status-display">Ready</div>
+            </div>
+            
+            <div class="log-section">
+                <div class="log-header">System Logs</div>
+                <div class="log-content" id="log-content">
+                    <div class="log-entry info">Circuit Engine initialized</div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="engine.js" type="module"></script>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circuit Engine</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <!-- Top Area -->
+        <div class="main-area">
+            <!-- Left Panel: Component Library -->
+            <aside class="left-panel">
+                <h2 class="panel-title">Components</h2>
+                <div class="component-list">
+                    <div class="component-item" draggable="true" data-type="B">
+                        <div class="component-tile">B</div>
+                        <span class="component-label">Bulb</span>
+                    </div>
+                    <div class="component-item" draggable="true" data-type="V">
+                        <div class="component-tile">V</div>
+                        <span class="component-label">Voltage Source</span>
+                    </div>
+                    <div class="component-item" draggable="true" data-type="G">
+                        <div class="component-tile">G</div>
+                        <span class="component-label">Ground</span>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Center Panel: Canvas -->
+            <main class="center-panel" id="canvas-container">
+                <svg id="circuit-svg" width="100%" height="100%">
+                    <defs>
+                        <pattern id="grid-pattern" width="40" height="40" patternUnits="userSpaceOnUse">
+                            <circle cx="1" cy="1" r="1" fill="#334155" opacity="0.5"/>
+                        </pattern>
+                        <marker id="current-arrow" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#10b981" />
+                        </marker>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#grid-pattern)" />
+                    <g id="wires-layer"></g>
+                    <g id="currents-layer"></g>
+                    <g id="components-layer"></g>
+                    <g id="temp-wire-layer" style="display: none;">
+                        <line id="temp-wire" stroke="#64748b" stroke-width="2" stroke-dasharray="5,5" />
+                    </g>
+                </svg>
+                
+                <div class="canvas-overlay">
+                    <div class="grid-info" id="grid-pos">Grid: 0, 0</div>
+                </div>
+            </main>
+
+            <!-- Right Panel: Inspector -->
+            <aside class="right-panel" id="inspector">
+                <h2 class="panel-title">Inspector</h2>
+                <div id="inspector-content">
+                    <div class="empty-state">
+                        <p class="empty-text">No component selected</p>
+                        <div class="system-stats">
+                            <div class="stat-row">
+                                <span>Status:</span>
+                                <span id="sim-status" class="status-badge stopped">Stopped</span>
+                            </div>
+                            <div class="stat-row">
+                                <span>Components:</span>
+                                <span id="stat-components">0</span>
+                            </div>
+                            <div class="stat-row">
+                                <span>Nodes:</span>
+                                <span id="stat-nodes">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Bottom Panel: Controls & Logs -->
+        <footer class="bottom-panel">
+            <div class="control-section">
+                <button class="btn btn-primary" id="btn-run">▶ Run</button>
+                <button class="btn btn-secondary" id="btn-stop" disabled>⏹ Stop</button>
+                <button class="btn btn-tertiary" id="btn-step">⏭ Step</button>
+            </div>
+            
+            <div class="status-section">
+                <div class="status-display" id="status-display">Ready</div>
+            </div>
+            
+            <div class="log-section">
+                <div class="log-header">System Logs</div>
+                <div class="log-content" id="log-content">
+                    <div class="log-entry info">Circuit Engine initialized</div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="engine.js" type="module"></script>
+</html>
